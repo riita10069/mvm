@@ -1,0 +1,57 @@
+#!/bin/sh
+# ssh ProxyCommand for Host microvm-*: stdio <-> wss://<endpoint>/ -> mvm-agent :2222 -> sshd.
+#   ProxyCommand ~/code/github.com/riita10069/mvm/bin/mvm-proxy %h
+# The endpoint and a 60-minute MicroVM auth token (allowedPorts 2222) are cached under
+# ~/.cache/mvm/<id>/ and the token is reissued when less than 10 minutes remain.
+# websocat only takes the token as an argument, so it is visible in the local `ps` while connected.
+set -eu
+
+# GUI apps (VS Code Remote-SSH) start ssh without the shell's PATH.
+PATH=$PATH:/opt/homebrew/bin:/usr/local/bin
+id=${1:?usage: mvm-proxy <microvm-id>}
+case $id in microvm-*) ;; *) echo "mvm-proxy: not a MicroVM id: $id" >&2; exit 255 ;; esac
+
+cache=$HOME/.cache/mvm/$id
+umask 077
+mkdir -p "$cache"
+
+# The region the VM was started in (written by `mvm up`) wins over the shell's current MVM_REGION.
+region=$(cat "$cache/region" 2>/dev/null || true)
+[ -n "$region" ] || region=${MVM_REGION:-ap-northeast-1}
+[ -n "${MVM_PROFILE:-}" ] && export AWS_PROFILE="$MVM_PROFILE"
+
+aws_() {
+  echo "+ aws --region $region $*" >&2
+  aws --region "$region" "$@"
+}
+
+if [ ! -s "$cache/endpoint" ]; then
+  tmp=$(mktemp "$cache/endpoint.XXXXXX")
+  aws_ lambda-microvms get-microvm --microvm-identifier "$id" --query endpoint --output text > "$tmp"
+  mv "$tmp" "$cache/endpoint"
+fi
+endpoint=$(cat "$cache/endpoint")
+
+now=$(date +%s)
+expires=$(cat "$cache/token.exp" 2>/dev/null || echo 0)
+cached=1
+if [ $((expires - now)) -lt 600 ] || [ ! -s "$cache/token" ]; then
+  tmp=$(mktemp "$cache/token.XXXXXX")
+  aws_ lambda-microvms create-microvm-auth-token --microvm-identifier "$id" \
+    --expiration-in-minutes 60 --allowed-ports port=2222 \
+    --query 'authToken."X-aws-proxy-auth"' --output text > "$tmp"
+  mv "$tmp" "$cache/token"
+  echo $((now + 3600)) > "$cache/token.exp"
+  cached=0
+fi
+token=$(cat "$cache/token")
+
+# A cached token may have been invalidated: drop it after a failure so the next connection gets a
+# new one. A token issued in the last 10 minutes is kept, so retry loops (VM still booting) reuse it.
+websocat --binary --exit-on-eof \
+  --protocol "lambda-microvms, lambda-microvms.authentication.$token, lambda-microvms.port.2222" \
+  "wss://$endpoint/" || {
+  rc=$?
+  [ "$cached" = 1 ] && [ $((expires - now)) -le 3000 ] && rm -f "$cache/token" "$cache/token.exp"
+  exit "$rc"
+}

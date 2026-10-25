@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-label="mvm: disposable dev VMs on AWS Lambda MicroVMs, driven by TAB">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0f0a1f"/>
+      <stop offset="1" stop-color="#1a1035"/>
+    </linearGradient>
+    <linearGradient id="title" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f472b6">
+        <animate attributeName="stop-color" values="#f472b6;#a78bfa;#22d3ee;#f472b6" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="0.5" stop-color="#a78bfa">
+        <animate attributeName="stop-color" values="#a78bfa;#22d3ee;#f472b6;#a78bfa" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="1" stop-color="#22d3ee">
+        <animate attributeName="stop-color" values="#22d3ee;#f472b6;#a78bfa;#22d3ee" dur="6s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    <radialGradient id="blob1"><stop offset="0" stop-color="#ec4899" stop-opacity=".55"/><stop offset="1" stop-color="#ec4899" stop-opacity="0"/></radialGradient>
+    <radialGradient id="blob2"><stop offset="0" stop-color="#8b5cf6" stop-opacity=".6"/><stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/></radialGradient>
+    <radialGradient id="blob3"><stop offset="0" stop-color="#06b6d4" stop-opacity=".5"/><stop offset="1" stop-color="#06b6d4" stop-opacity="0"/></radialGradient>
+    <clipPath id="frame"><rect width="1200" height="340" rx="28"/></clipPath>
+  </defs>
+  <g clip-path="url(#frame)">
+    <rect width="1200" height="340" fill="url(#bg)"/>
+    <circle cx="180" cy="80" r="220" fill="url(#blob1)">
+      <animate attributeName="cx" values="180;320;180" dur="9s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="80;160;80" dur="11s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="980" cy="260" r="260" fill="url(#blob2)">
+      <animate attributeName="cx" values="980;840;980" dur="10s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="640" cy="-20" r="200" fill="url(#blob3)">
+      <animate attributeName="cy" values="-20;60;-20" dur="8s" repeatCount="indefinite"/>
+    </circle>
+    <!-- drifting sparkles -->
+    <g fill="#fff">
+      <circle cx="90" cy="290" r="2"><animate attributeName="opacity" values="0;1;0" dur="2.6s" repeatCount="indefinite"/></circle>
+      <circle cx="420" cy="60" r="1.6"><animate attributeName="opacity" values="1;0;1" dur="3.1s" repeatCount="indefinite"/></circle>
+      <circle cx="760" cy="300" r="2.2"><animate attributeName="opacity" values="0;1;0" dur="2.2s" repeatCount="indefinite"/></circle>
+      <circle cx="1110" cy="70" r="1.8"><animate attributeName="opacity" values="1;0;1" dur="2.8s" repeatCount="indefinite"/></circle>
+      <circle cx="1040" cy="190" r="1.4"><animate attributeName="opacity" values="0;1;0" dur="3.4s" repeatCount="indefinite"/></circle>
+      <circle cx="300" cy="230" r="1.5"><animate attributeName="opacity" values="1;0;1" dur="2.4s" repeatCount="indefinite"/></circle>
+    </g>
+  </g>
+  <text x="600" y="172" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="132" font-weight="800" letter-spacing="6" fill="url(#title)">mvm</text>
+  <text x="600" y="228" text-anchor="middle" font-family="-apple-system, 'Hiragino Sans', 'Noto Sans JP', 'Segoe UI', sans-serif" font-size="30" font-weight="700" fill="#f5f3ff">TAB だけで、使い捨ての開発 VM</text>
+  <text x="600" y="266" text-anchor="middle" font-family="-apple-system, 'Segoe UI', sans-serif" font-size="19" fill="#c4b5fd" letter-spacing="1.5">disposable dev VMs on AWS Lambda MicroVMs · Claude Code &amp; Codex inside · zsh + aws CLI</text>
+  <!-- typing chip -->
+  <g transform="translate(470 288)">
+    <rect width="260" height="36" rx="18" fill="#000" fill-opacity=".35" stroke="#a78bfa" stroke-opacity=".6"/>
+    <text x="22" y="24" font-family="ui-monospace, Menlo, monospace" font-size="17" fill="#f472b6">❯</text>
+    <text x="44" y="24" font-family="ui-monospace, Menlo, monospace" font-size="17" fill="#e9d5ff">mvm ⇥ ⇥ ⏎</text>
+    <rect x="148" y="9" width="9" height="19" fill="#22d3ee">
+      <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+    </rect>
+  </g>
+</svg>

@@ -1,0 +1,14 @@
+# ~/.zshrc for dev in an mvm MicroVM.
+HISTFILE=~/.zsh_history HISTSIZE=50000 SAVEHIST=50000
+setopt share_history hist_ignore_dups auto_cd interactive_comments
+autoload -Uz compinit && compinit -u
+autoload -Uz vcs_info
+zstyle ':vcs_info:git:*' formats ' %F{magenta}(%b)%f'
+precmd() { vcs_info }
+setopt prompt_subst
+PROMPT='%F{cyan}mvm%f:%F{blue}%~%f${vcs_info_msg_0_} %# '
+bindkey -e
+command -v direnv >/dev/null && eval "$(direnv hook zsh)"
+[ -r /usr/share/fzf/shell/key-bindings.zsh ] && source /usr/share/fzf/shell/key-bindings.zsh
+command -v fzf >/dev/null && eval "$(fzf --zsh 2>/dev/null)"
+alias ll='ls -lah' vim=nvim lg=lazygit

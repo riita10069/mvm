@@ -1,0 +1,48 @@
+#!/bin/sh
+# mvm-install <tool>...: language toolchains are left out of the image to keep the 8 GB VM disk for work.
+#   go       latest Go (go.dev, sha256-checked)            /opt/go      ~280 MB
+#   rust     rustup minimal profile + rustfmt, clippy      /opt/rust    ~550 MB
+#   python   CPython 3.12 via uv (or: uv python install X) ~/.local     ~100 MB
+#   java     Amazon Corretto 21 headless                   dnf          ~260 MB
+#   ruby     Ruby 3.2                                       dnf           ~60 MB
+#   node-pm  pnpm and yarn                                  npm           ~55 MB
+#   build    cmake, autotools, protobuf, common -devel libs dnf          ~150 MB
+#   clang | gdb | valgrind                                  dnf
+set -eu
+[ $# -gt 0 ] || { sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+dnf_() { sudo dnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs "$@"; }
+as_dev() {
+  [ "$(id -u)" -ne 0 ] || { echo "mvm-install: run '$1' as dev, not root (it installs into dev-owned dirs)" >&2; exit 2; }
+}
+for tool in "$@"; do
+  case $tool in
+    go)
+      as_dev go
+      f=$(curl -fsSL 'https://go.dev/dl/?mode=json' | jq -r '.[0].files[] | select(.os=="linux" and .arch=="arm64" and .kind=="archive") | "\(.filename) \(.sha256)"')
+      [ -n "$f" ] || { echo "mvm-install: could not read the Go release list from go.dev" >&2; exit 1; }
+      set -- $f
+      t=$(mktemp -d)
+      curl -fsSL -o "$t/$1" "https://go.dev/dl/$1"
+      echo "$2  $t/$1" | sha256sum -c - >/dev/null
+      # Replace the old toolchain only after the new archive is verified.
+      find /opt/go -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+      tar -xzf "$t/$1" -C /opt/go --strip-components=1
+      rm -f "$t/$1" && rmdir "$t"
+      /opt/go/bin/go version ;;
+    rust)
+      as_dev rust
+      export RUSTUP_HOME=/opt/rust/rustup CARGO_HOME=/opt/rust/cargo
+      curl -fsSL https://sh.rustup.rs | sh -s -- -y --no-modify-path --profile minimal --component rustfmt,clippy
+      rm -rf /opt/rust/rustup/downloads /opt/rust/rustup/tmp ;;
+    python)   as_dev python; uv python install --default 3.12 ;;
+    java)     dnf_ java-21-amazon-corretto-headless ;;
+    ruby)     dnf_ ruby3.2 ruby3.2-devel ;;
+    node-pm)  sudo npm install -g pnpm yarn && sudo npm cache clean --force ;;
+    build)    dnf_ cmake autoconf automake libtool pkgconf-pkg-config protobuf-compiler \
+                openssl-devel zlib-devel bzip2-devel xz-devel readline-devel libffi-devel sqlite-devel ncurses-devel ;;
+    clang|gdb|valgrind) dnf_ "$tool" ;;
+    *) echo "mvm-install: unknown tool '$tool'" >&2; exit 2 ;;
+  esac
+done
+sudo dnf clean all >/dev/null 2>&1 || true
+df -h / | tail -1

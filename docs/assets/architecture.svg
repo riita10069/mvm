@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" role="img" aria-label="Architecture: Mac zsh and ssh connect over wss with an IAM token to the MicroVM endpoint, then to mvm-agent and sshd in the VM, which reaches Bedrock and GitHub">
+  <defs>
+    <linearGradient id="card" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1b4b"/><stop offset="1" stop-color="#0f0a1f"/></linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f472b6"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+    <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#22d3ee"/><stop offset="1" stop-color="#a78bfa"/></linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <path id="p1" d="M 300 175 C 360 175, 380 175, 440 175"/>
+    <path id="p2" d="M 650 175 C 700 175, 720 175, 770 175"/>
+    <path id="p3" d="M 980 300 C 980 330, 900 350, 860 372"/>
+    <path id="p4" d="M 1010 300 C 1010 330, 1060 350, 1080 372"/>
+  </defs>
+  <rect width="1200" height="430" rx="28" fill="#0b0716"/>
+  <g font-family="-apple-system, 'Hiragino Sans', 'Noto Sans JP', 'Segoe UI', sans-serif">
+    <!-- Mac -->
+    <rect x="40" y="70" width="260" height="210" rx="20" fill="url(#card)" stroke="url(#pink)" stroke-width="2"/>
+    <text x="170" y="108" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">💻 Mac</text>
+    <g font-family="ui-monospace, Menlo, monospace" font-size="16" fill="#e9d5ff">
+      <text x="70" y="150">❯ mvm ⇥ ⇥ ⏎</text>
+      <text x="70" y="180" fill="#a5b4fc">zsh + aws CLI</text>
+      <text x="70" y="210" fill="#a5b4fc">ssh ⟶ mvm-proxy</text>
+      <text x="70" y="240" fill="#a5b4fc">websocat</text>
+    </g>
+    <!-- Endpoint -->
+    <rect x="440" y="110" width="210" height="130" rx="20" fill="url(#card)" stroke="url(#cyan)" stroke-width="2"/>
+    <text x="545" y="150" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">🔐 Endpoint</text>
+    <text x="545" y="180" text-anchor="middle" font-size="15" fill="#67e8f9">wss · TLS</text>
+    <text x="545" y="206" text-anchor="middle" font-size="15" fill="#67e8f9">IAM auth token</text>
+    <!-- MicroVM -->
+    <rect x="770" y="40" width="390" height="260" rx="22" fill="url(#card)" stroke="url(#pink)" stroke-width="2.5"/>
+    <text x="965" y="80" text-anchor="middle" font-size="24" font-weight="800" fill="#fff">⚡ Lambda MicroVM</text>
+    <text x="965" y="104" text-anchor="middle" font-size="14" fill="#c4b5fd">AL2023 · arm64 · ≤ 8 h · auto suspend / resume</text>
+    <g font-size="15" font-weight="700">
+      <rect x="795" y="122" width="160" height="40" rx="12" fill="#f472b6" fill-opacity=".18" stroke="#f472b6"/>
+      <text x="875" y="148" text-anchor="middle" font-size="14" fill="#fbcfe8">mvm-agent → sshd</text>
+      <rect x="975" y="122" width="160" height="40" rx="12" fill="#a78bfa" fill-opacity=".18" stroke="#a78bfa"/>
+      <text x="1055" y="148" text-anchor="middle" fill="#ddd6fe">Claude Code</text>
+      <rect x="795" y="176" width="160" height="40" rx="12" fill="#22d3ee" fill-opacity=".15" stroke="#22d3ee"/>
+      <text x="875" y="202" text-anchor="middle" fill="#a5f3fc">Codex · Gemini</text>
+      <rect x="975" y="176" width="160" height="40" rx="12" fill="#34d399" fill-opacity=".15" stroke="#34d399"/>
+      <text x="1055" y="202" text-anchor="middle" fill="#a7f3d0">git · gh</text>
+      <rect x="795" y="230" width="340" height="40" rx="12" fill="#fbbf24" fill-opacity=".12" stroke="#fbbf24"/>
+      <text x="965" y="256" text-anchor="middle" fill="#fde68a">~/work/&lt;repo&gt;  ← clone / sync</text>
+    </g>
+    <!-- Bedrock / GitHub -->
+    <rect x="760" y="372" width="200" height="44" rx="14" fill="#1e1b4b" stroke="#a78bfa"/>
+    <text x="860" y="400" text-anchor="middle" font-size="16" font-weight="700" fill="#ddd6fe">🧠 Amazon Bedrock</text>
+    <rect x="990" y="372" width="170" height="44" rx="14" fill="#1e1b4b" stroke="#34d399"/>
+    <text x="1075" y="400" text-anchor="middle" font-size="16" font-weight="700" fill="#a7f3d0">🐙 GitHub</text>
+    <!-- Terraform -->
+    <rect x="40" y="320" width="260" height="70" rx="18" fill="#1e1b4b" stroke="#818cf8" stroke-dasharray="6 6"/>
+    <text x="170" y="350" text-anchor="middle" font-size="17" font-weight="800" fill="#c7d2fe">🧱 terraform apply</text>
+    <text x="170" y="374" text-anchor="middle" font-size="13" fill="#a5b4fc">image · IAM roles · S3 · logs</text>
+  </g>
+  <!-- wires -->
+  <g fill="none" stroke-width="3" stroke-linecap="round">
+    <use href="#p1" stroke="#f472b6" stroke-opacity=".45" stroke-dasharray="8 10"/>
+    <use href="#p2" stroke="#22d3ee" stroke-opacity=".45" stroke-dasharray="8 10"/>
+    <use href="#p3" stroke="#a78bfa" stroke-opacity=".45" stroke-dasharray="6 8"/>
+    <use href="#p4" stroke="#34d399" stroke-opacity=".45" stroke-dasharray="6 8"/>
+    <path d="M 300 345 C 520 345, 640 330, 770 280" stroke="#818cf8" stroke-opacity=".35" stroke-dasharray="4 8"/>
+  </g>
+  <!-- moving packets -->
+  <g filter="url(#glow)">
+    <circle r="6" fill="#f472b6"><animateMotion dur="1.6s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+    <circle r="6" fill="#f472b6"><animateMotion dur="1.6s" begin="0.8s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+    <circle r="6" fill="#22d3ee"><animateMotion dur="1.4s" begin="0.4s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+    <circle r="6" fill="#22d3ee"><animateMotion dur="1.4s" begin="1.1s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+    <circle r="5" fill="#a78bfa"><animateMotion dur="1.8s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+    <circle r="5" fill="#34d399"><animateMotion dur="2s" begin="0.6s" repeatCount="indefinite"><mpath href="#p4"/></animateMotion></circle>
+  </g>
+  <g font-family="ui-monospace, Menlo, monospace" font-size="13" fill="#f9a8d4" text-anchor="middle">
+    <text x="370" y="205">SSH over</text><text x="370" y="222">WebSocket</text>
+    <text x="710" y="205" fill="#67e8f9">:2222</text>
+  </g>
+</svg>

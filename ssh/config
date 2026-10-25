@@ -1,0 +1,19 @@
+# Include from the top of ~/.ssh/config:  Include ~/code/github.com/riita10069/mvm/ssh/config
+# `ssh microvm-<id>`, scp, rsync and VS Code Remote-SSH all go through mvm-proxy.
+Host microvm-*
+  User dev
+  IdentityFile ~/.ssh/mvm_ed25519
+  IdentitiesOnly yes
+  # Each VM gets a fresh host key at /run; ids are never reused, so trust on first use per id.
+  StrictHostKeyChecking accept-new
+  UserKnownHostsFile ~/.cache/mvm/known_hosts
+  # Absolute path: GUI apps such as VS Code run ssh without the shell PATH. Adjust if cloned elsewhere.
+  ProxyCommand ~/code/github.com/riita10069/mvm/bin/mvm-proxy %h
+  ServerAliveInterval 30
+  ServerAliveCountMax 4
+  ControlMaster auto
+  ControlPath ~/.cache/mvm/cm-%C
+  ControlPersist 120
+  ForwardAgent no
+  SendEnv LANG LC_*
+  LogLevel ERROR

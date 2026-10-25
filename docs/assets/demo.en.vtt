@@ -1,0 +1,41 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:02.000
+Type mvm and press TAB
+
+00:00:02.000 --> 00:00:06.000
+① TAB opens a menu → pick up, press Enter
+
+00:00:06.000 --> 00:00:08.000
+MicroVM boots (~15 s, cut from the recording)
+
+00:00:08.000 --> 00:00:12.000
+② You are in the VM, repo already cloned to ~/work
+
+00:00:12.000 --> 00:00:17.000
+Linux arm64 with Claude Code preinstalled
+
+00:00:17.000 --> 00:00:22.000
+③ Claude on Bedrock just works (no API key)
+
+00:00:22.000 --> 00:00:26.000
+exit brings you back to your Mac
+
+00:00:26.000 --> 00:00:31.000
+④ mvm stop TAB: see what Enter will do first
+
+00:00:31.000 --> 00:00:33.000
+Suspended
+
+00:00:33.000 --> 00:00:38.000
+⑤ Pick the VM by repo name → only actions that fit
+
+00:00:38.000 --> 00:00:42.000
+Resumed, RUNNING again
+
+00:00:42.000 --> 00:00:48.000
+⑥ rm always asks before terminating
+
+00:00:48.000 --> 00:00:54.200
+From start to cleanup, all with TAB
+

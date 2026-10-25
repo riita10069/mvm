@@ -1,0 +1,12 @@
+#!/bin/sh
+# gh shim: take the GitHub token from git's in-memory credential cache (seeded by `mvm up`/`mvm gh-login`),
+# so the token never lands in ~/.config/gh or any other file. Only the cache helper is consulted and no
+# prompt (terminal or askpass) can run, so nothing typed here gets stored.
+if [ -z "${GH_TOKEN:-}" ] && [ -z "${GITHUB_TOKEN:-}" ]; then
+  GH_TOKEN=$(printf 'protocol=https\nhost=github.com\n\n' |
+    GIT_TERMINAL_PROMPT=0 GIT_ASKPASS='' SSH_ASKPASS='' \
+    git -c credential.helper= -c 'credential.helper=cache --timeout=28800' credential fill 2>/dev/null |
+    sed -n 's/^password=//p')
+  [ -n "$GH_TOKEN" ] && export GH_TOKEN
+fi
+exec /opt/gh/bin/gh "$@"

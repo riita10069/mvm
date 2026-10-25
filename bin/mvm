@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+# mvm for any shell, script or coding agent: loads shell/mvm.zsh and runs one command.
+#   ~/code/github.com/riita10069/mvm/bin/mvm up --no-login
+source ${0:A:h}/../shell/mvm.zsh || exit 1
+mvm "$@"

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 1200 400" role="img" aria-label="TAB-only flows: start, stop, resume, clone, remove">
+  <defs>
+    <linearGradient id="key" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#312e81"/><stop offset="1" stop-color="#1e1b4b"/></linearGradient>
+    <g id="tab"><rect width="82" height="40" rx="10" fill="url(#key)" stroke="#a78bfa" stroke-width="1.5"/><text x="41" y="27" text-anchor="middle" font-size="16" font-weight="800" fill="#e9d5ff">⇥ TAB</text></g>
+    <g id="ret"><rect width="64" height="40" rx="10" fill="url(#key)" stroke="#f472b6" stroke-width="1.5"/><text x="32" y="27" text-anchor="middle" font-size="17" font-weight="800" fill="#fbcfe8">⏎</text></g>
+    <g id="y"><rect width="40" height="40" rx="10" fill="url(#key)" stroke="#fbbf24" stroke-width="1.5"/><text x="20" y="27" text-anchor="middle" font-size="17" font-weight="800" fill="#fde68a">y</text></g>
+  </defs>
+  <rect width="1200" height="400" rx="28" fill="#0b0716"/>
+  <g font-family="-apple-system, 'Hiragino Sans', 'Noto Sans JP', 'Segoe UI', sans-serif">
+    <!-- each row lights up in turn -->
+    <g>
+      <rect x="30" y="24" width="1140" height="60" rx="16" fill="#f472b6" fill-opacity="0"><animate attributeName="fill-opacity" values=".16;.16;0;0;0;0;0;0;0;0;.16" keyTimes="0;.18;.2;.4;.5;.6;.7;.8;.9;.98;1" dur="10s" repeatCount="indefinite"/></rect>
+      <text x="70" y="62" font-size="24" font-weight="800" fill="#f472b6">🚀 起動</text>
+      <text x="250" y="62" font-family="ui-monospace, Menlo, monospace" font-size="21" fill="#fff">mvm</text>
+      <use href="#tab" x="320" y="34"/><use href="#ret" x="412" y="34"/><use href="#ret" x="486" y="34"/>
+      <text x="584" y="61" font-size="17" fill="#c4b5fd">VM を起動 → このリポジトリを clone → ログイン</text>
+    </g>
+    <g>
+      <rect x="30" y="94" width="1140" height="60" rx="16" fill="#fbbf24" fill-opacity="0"><animate attributeName="fill-opacity" values="0;0;.16;.16;0;0" keyTimes="0;.19;.2;.39;.4;1" dur="10s" repeatCount="indefinite"/></rect>
+      <text x="70" y="132" font-size="24" font-weight="800" fill="#fbbf24">💤 停止</text>
+      <text x="250" y="132" font-family="ui-monospace, Menlo, monospace" font-size="21" fill="#fff">mvm stop</text>
+      <use href="#tab" x="380" y="104"/><use href="#ret" x="472" y="104"/>
+      <text x="570" y="131" font-size="17" fill="#c4b5fd">RUNNING の VM だけが候補に出る</text>
+    </g>
+    <g>
+      <rect x="30" y="164" width="1140" height="60" rx="16" fill="#22d3ee" fill-opacity="0"><animate attributeName="fill-opacity" values="0;0;.16;.16;0;0" keyTimes="0;.39;.4;.59;.6;1" dur="10s" repeatCount="indefinite"/></rect>
+      <text x="70" y="202" font-size="24" font-weight="800" fill="#22d3ee">⚡ 再開</text>
+      <text x="250" y="202" font-family="ui-monospace, Menlo, monospace" font-size="21" fill="#fff">mvm resume <tspan fill="#67e8f9">hello</tspan></text>
+      <use href="#tab" x="470" y="174"/><use href="#ret" x="562" y="174"/>
+      <text x="660" y="201" font-size="17" fill="#c4b5fd">リポジトリ名で VM を指定</text>
+    </g>
+    <g>
+      <rect x="30" y="234" width="1140" height="60" rx="16" fill="#34d399" fill-opacity="0"><animate attributeName="fill-opacity" values="0;0;.16;.16;0;0" keyTimes="0;.59;.6;.79;.8;1" dur="10s" repeatCount="indefinite"/></rect>
+      <text x="70" y="272" font-size="24" font-weight="800" fill="#34d399">📦 clone</text>
+      <text x="250" y="272" font-family="ui-monospace, Menlo, monospace" font-size="21" fill="#fff">mvm <tspan fill="#86efac">f3c8</tspan></text>
+      <use href="#tab" x="370" y="244"/><use href="#tab" x="462" y="244"/><use href="#tab" x="554" y="244"/><use href="#ret" x="646" y="244"/><use href="#ret" x="720" y="244"/>
+      <text x="818" y="271" font-size="17" fill="#c4b5fd">VM を選ぶ → できる操作だけが出る</text>
+    </g>
+    <g>
+      <rect x="30" y="304" width="1140" height="60" rx="16" fill="#fb7185" fill-opacity="0"><animate attributeName="fill-opacity" values="0;0;.16;.16;0" keyTimes="0;.79;.8;.98;1" dur="10s" repeatCount="indefinite"/></rect>
+      <text x="70" y="342" font-size="24" font-weight="800" fill="#fb7185">🧹 削除</text>
+      <text x="250" y="342" font-family="ui-monospace, Menlo, monospace" font-size="21" fill="#fff">mvm rm</text>
+      <use href="#tab" x="350" y="314"/><use href="#ret" x="442" y="314"/><use href="#y" x="516" y="314"/>
+      <text x="590" y="341" font-size="17" fill="#c4b5fd">必ず y/N で確認</text>
+    </g>
+  </g>
+</svg>

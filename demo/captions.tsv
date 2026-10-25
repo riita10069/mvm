@@ -1,0 +1,14 @@
+# start	end	ja	en
+0.0	2.0	mvm と打って TAB を押すだけ	Type mvm and press TAB
+2.0	6.0	① TAB でメニュー → up を選んで Enter	① TAB opens a menu → pick up, press Enter
+6.0	8.0	MicroVM を起動（約 15 秒、録画では省略）	MicroVM boots (~15 s, cut from the recording)
+8.0	12.0	② もう VM の中。リポジトリは ~/work に clone 済み	② You are in the VM, repo already cloned to ~/work
+12.0	17.0	Linux arm64。Claude Code も入っている	Linux arm64 with Claude Code preinstalled
+17.0	22.0	③ Bedrock の Claude がそのまま動く（API キー不要）	③ Claude on Bedrock just works (no API key)
+22.0	26.0	exit で手元の Mac に戻る	exit brings you back to your Mac
+26.0	31.0	④ mvm stop TAB：Enter で何が起きるかを先に表示	④ mvm stop TAB: see what Enter will do first
+31.0	33.0	suspend した	Suspended
+33.0	38.0	⑤ リポジトリ名で VM を選ぶ → その状態でできる操作だけ	⑤ Pick the VM by repo name → only actions that fit
+38.0	42.0	resume して RUNNING に戻った	Resumed, RUNNING again
+42.0	48.0	⑥ rm は必ず確認してから消す	⑥ rm always asks before terminating
+48.0	54.2	起動から後片付けまで、ぜんぶ TAB	From start to cleanup, all with TAB

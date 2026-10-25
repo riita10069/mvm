@@ -1,0 +1,11 @@
+#!/bin/sh
+# Stand-in for aws in tests: two VMs (one running, one suspended) and one image.
+# AWS_SLEEP=<s> delays the answer, AWS_FAIL=1 fails like expired credentials.
+[ -n "${AWS_SLEEP:-}" ] && sleep "$AWS_SLEEP"
+[ -n "${AWS_FAIL:-}" ] && { echo "An error occurred (ExpiredToken)" >&2; exit 255; }
+[ -n "${AWS_LOG:-}" ] && echo "$(date +%s) $*" >> "$AWS_LOG"
+case "$*" in
+*list-microvms*) echo '{"items":[{"microvmId":"microvm-aaa111","state":"RUNNING","imageArn":"arn:aws:lambda:ap-northeast-1:1:microvm-image:mvm","imageVersion":"4.0","startedAt":"2026-10-25T19:04:00.000000+09:00"},{"microvmId":"microvm-bbb222","state":"SUSPENDED","imageArn":"arn:aws:lambda:ap-northeast-1:1:microvm-image:mvm","imageVersion":"4.0","startedAt":"2026-10-25T18:04:00.000000+09:00"}]}' ;;
+*list-microvm-images*) echo '{"items":[{"name":"mvm","state":"CREATED","latestActiveImageVersion":"4.0"}]}' ;;
+*) echo "stub aws: $*" >&2 ;;
+esac

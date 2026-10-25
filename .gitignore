@@ -1,0 +1,10 @@
+terraform/.terraform/
+terraform/.build/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/.terraform.tfstate.lock.info
+__pycache__/
+*.pyc
+.DS_Store
+*.zwc
+demo/raw.mp4
