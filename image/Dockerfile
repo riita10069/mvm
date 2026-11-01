@@ -109,7 +109,8 @@ RUN npm install -g @anthropic-ai/claude-code@latest @openai/codex@latest @google
       aws-cdk \
  && npm cache clean --force && rm -rf /root/.cache /root/.npm \
  && v="$(claude --version | awk '{print $1}')" && echo "claude-code $v" \
- && [ "$(printf '%s\n' "$CLAUDE_CODE_MIN_VERSION" "$v" | sort -V | head -1)" = "$CLAUDE_CODE_MIN_VERSION" ]
+ && [ "$(printf '%s\n' "$CLAUDE_CODE_MIN_VERSION" "$v" | sort -V | head -1)" = "$CLAUDE_CODE_MIN_VERSION" ] \
+ && rm -rf /tmp/node-compile-cache
 
 # ---- dev user, shell, git ----
 COPY files/ /tmp/mvm-files/
@@ -143,7 +144,7 @@ RUN set -eu; f=/tmp/mvm-files; \
 # nothing per-VM (keys, tokens, running servers) may be left behind.
 RUN set -eu; o=/tmp/mvm-overlay; \
     if [ -d $o ]; then \
-      if [ -d $o/home ]; then cp -a $o/home/. /home/dev/ && chown -R dev:dev /home/dev; fi; \
+      if [ -d $o/home ]; then cp -a $o/home/. /home/dev/ && chown -R dev:dev /home/dev && chmod 0700 /home/dev; fi; \
       if [ -f $o/setup.sh ]; then cd /home/dev && sudo -u dev -H env MVM_OVERLAY=$o bash $o/setup.sh; fi; \
       rm -rf $o; \
     fi
