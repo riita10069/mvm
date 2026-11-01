@@ -3,7 +3,7 @@
 #   mvm up [-i image] [--no-clone] [--no-login]
 #                                    start a VM, seed the GitHub token, clone the current repo, log in
 #                                    (no login without a terminal: the id is printed on stdout instead)
-#   mvm ls [-a]                      list VMs (-a: include terminated ones)
+#   mvm ls [-a] [--tsv]              list VMs (-a: include terminated ones, --tsv: no header, tab-separated)
 #   mvm <id>                         log in (same as `ssh <id>`); a suspended VM resumes on connect
 #   mvm <id> <action>                stop | resume | rm | clone | sync | exec | port | gh-login | ssh
 #   mvm sync <id>                    make ~/work/<repo> match this working tree (uncommitted changes too)
@@ -142,10 +142,25 @@ _mvm_repos() { emulate -L zsh; [[ -r $MVM_CACHE/$1/repos ]] && print -r -- ${(j:
 
 _mvm_ls() {
   emulate -L zsh
-  local all=false row id st img started left t
-  [[ ${1:-} == (-a|--all) ]] && all=true
-  local -a rows=(${(f)"$(_mvm_aws lambda-microvms list-microvms --output json |
-    jq -r --argjson max $MVM_MAX_SECONDS --argjson all $all $_MVM_JQ_ROWS)"})
+  local all=false tsv=0 json row id st img started left t
+  while (( $# )); do
+    case $1 in
+      -a|--all) all=true ;;
+      --tsv) tsv=1 ;;
+      *) _mvm_say "usage: mvm ls [-a] [--tsv]"; return 2 ;;
+    esac
+    shift
+  done
+  json=$(_mvm_aws lambda-microvms list-microvms --output json) || return
+  local -a rows=(${(f)"$(jq -r --argjson max $MVM_MAX_SECONDS --argjson all $all $_MVM_JQ_ROWS <<<$json)"})
+  # --tsv: the same columns without the header, for scripts such as a session picker
+  if (( tsv )); then
+    for row in $rows; do
+      IFS=$'\t' read -r id st img started left t <<<$row
+      print -r -- "$id"$'\t'"$st"$'\t'"$img"$'\t'"$started"$'\t'"$left"$'\t'"$(_mvm_repos $id)"
+    done
+    return 0
+  fi
   {
     print -r -- $'ID\tSTATE\tIMAGE\tSTARTED\tLEFT\tREPO'
     for row in $rows; do

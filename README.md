@@ -66,7 +66,7 @@ mvm ⇥                                                   # 🎉
 <td>☁️</td><td><b>Cloud</b></td><td><code>aws</code> · <code>cdk</code> · <code>terraform</code> · <code>kubectl</code> · <code>helm</code></td>
 </tr>
 <tr>
-<td>🔎</td><td><b>CLI</b></td><td><code>rg</code> · <code>fd</code> · <code>fzf</code> · <code>bat</code> · <code>jq</code> · <code>yq</code> · <code>delta</code> · <code>lazygit</code> · <code>nvim</code> · <code>tmux</code></td>
+<td>🔎</td><td><b>CLI</b></td><td><code>rg</code> · <code>fd</code> · <code>fzf</code> · <code>bat</code> · <code>jq</code> · <code>yq</code> · <code>delta</code> · <code>lazygit</code> · <code>nvim</code> · <code>tmux</code> · <code>herdr</code> · <code>zoxide</code> · <code>eza</code> · <code>yazi</code> · <code>ghq</code></td>
 </tr>
 <tr>
 <td>🧰</td><td><b>On demand</b></td><td><code>mvm-install go rust python java ruby node-pm build</code></td>

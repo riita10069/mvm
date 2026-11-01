@@ -8,3 +8,4 @@ __pycache__/
 .DS_Store
 *.zwc
 demo/raw.mp4
+image/files/overlay/

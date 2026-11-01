@@ -6,7 +6,7 @@ AWS Lambda MicroVMs の上に、使い捨ての開発用 VM を立てる道具�
 
 terraform/ はイメージを作るのに必要なものをすべて作ります。S3 のビルドコンテキスト用バケット、ビルドロール、VM の実行ロール、CloudWatch Logs のロググループ、MicroVM イメージです。イメージは CloudFormation の AWS::Lambda::MicrovmImage として作ります。Terraform AWS provider 6.70 の aws_lambdamicrovms_image には hooks と logging の設定がなく、VM に公開鍵を配る /run フックを有効にできないためです。実行ロールの ARN はイメージの mvm:execution-role タグに入れるので、手元に設定ファイルは要りません。
 
-image/ はイメージの中身です。Amazon Linux 2023 の arm64 に、git、gh、Claude Code、Codex、Gemini CLI、AWS CLI、AWS CDK、Terraform、kubectl、helm、ripgrep、fd、fzf、bat、jq、yq、delta、lazygit、neovim、tmux、zsh、uv、psql と mysql と redis のクライアントを入れています。GitHub のリリースから取るバイナリは版と sha256 を固定しています。言語のツールチェーンは入れていません。VM のディスクは 8 GB 固定で、イメージと作業領域がこれを分け合うためです。入っているのは、コーディングエージェントを動かす Node 22 と npm、mvm-agent が使うシステムの Python 3.9、npm のネイティブモジュールをビルドする gcc と make だけです。Go、Rust、Python 3.12、Java、Ruby、pnpm と yarn、cmake などのビルド用ライブラリ、clang、gdb、valgrind は、VM の中で mvm-install go rust のように実行して入れます。イメージは約 2.4 GB で、VM に入った直後のディスクの空きは約 4.2 GB です。 VM の入口は image/files/mvm-agent.py で、ポート 9000 でライフサイクルフックを受け、ポート 2222 の WebSocket を websocat で sshd に中継します。ホスト鍵、authorized_keys、環境変数は /run で VM ごとに作ります。イメージのスナップショットは /ready の時点で撮られ、全 VM がそこから起動するためです。
+image/ はイメージの中身です。Amazon Linux 2023 の arm64 に、git、gh、Claude Code、Codex、Gemini CLI、AWS CLI、AWS CDK、Terraform、kubectl、helm、ripgrep、fd、fzf、bat、jq、yq、delta、lazygit、neovim、tmux、zsh、uv、herdr、zoxide、eza、yazi、ghq、sheldon、deno、psql と mysql と redis のクライアントを入れています。GitHub のリリースから取るバイナリは版と sha256 を固定しています。言語のツールチェーンは入れていません。VM のディスクは 8 GB 固定で、イメージと作業領域がこれを分け合うためです。入っているのは、コーディングエージェントを動かす Node 22 と npm、mvm-agent が使うシステムの Python 3.9、npm のネイティブモジュールをビルドする gcc と make だけです。Go、Rust、Python 3.12、Java、Ruby、pnpm と yarn、cmake などのビルド用ライブラリ、clang、gdb、valgrind は、VM の中で mvm-install go rust のように実行して入れます。イメージは約 2.4 GB で、VM に入った直後のディスクの空きは約 4.2 GB です。 VM の入口は image/files/mvm-agent.py で、ポート 9000 でライフサイクルフックを受け、ポート 2222 の WebSocket を websocat で sshd に中継します。ホスト鍵、authorized_keys、環境変数は /run で VM ごとに作ります。イメージのスナップショットは /ready の時点で撮られ、全 VM がそこから起動するためです。
 
 Claude Code は Bedrock の Anthropic モデル、Codex は Bedrock の openai.gpt-5.5 を、どちらも VM の実行ロールで使います。API キーは要りません。gpt-5.5 は us-east-1 の bedrock-mantle でしか提供されていないので、Codex だけは us-east-1 を呼びます。
 
@@ -35,7 +35,7 @@ source ~/code/github.com/riita10069/mvm/shell/mvm.zsh
 
 ```
 mvm up [-i イメージ名] [--no-clone]   起動し、GitHub のトークンを渡し、カレントのリポジトリを clone して入る
-mvm ls [-a]                           ID、状態、イメージ、起動時刻、残り時間、clone したリポジトリ（-a は終了済みも）
+mvm ls [-a] [--tsv]                   ID、状態、イメージ、起動時刻、残り時間、clone したリポジトリ（-a は終了済みも、--tsv は見出しなしのタブ区切り）
 mvm <ID>                              入る。ssh <ID> と同じで、suspend 中なら接続で再開する
 mvm <ID> <操作>                       その VM に stop、resume、rm、clone、gh-login、ssh のどれかをする
 mvm <ID> -- <コマンド>                VM の中でコマンドを実行する
@@ -47,6 +47,14 @@ mvm up --no-login                     起動してもログインせず、ID だ
 ```
 
 bin/mvm は、zsh 以外のシェルやスクリプトから mvm を呼ぶためのラッパーです。
+
+herdr で入る
+
+イメージには herdr を入れてあります。~/.ssh/config で ssh/config を Include していれば、手元から herdr --remote microvm-<ID> で VM の herdr server につなげます。ペインは VM の中の server が持つので、手元の接続が切れても残り、VM が終わると消えます。テーマとキーバインドは手元の herdr の設定で描かれ、ペインの既定値とタブバーの command の項目は VM の側で解決されます。
+
+個人の設定を入れる
+
+image/files/overlay/ を置くと、イメージを作るときに取り込みます。overlay/home/ の中身を /home/dev に写し、そのあと overlay/setup.sh を dev ユーザーで実行します。dev は sudo できるので、setup.sh でツールを足すこともできます。overlay/ は .gitignore に入れてあり、このリポジトリにはコミットされません。Terraform は image/ を丸ごと zip にするので、overlay/ もビルドに入ります。スナップショットは全 VM で共有されるので、setup.sh でも鍵やトークンを作ったり、server を動かしたままにしたりしないでください。
 
 Coding Agent から使う
 

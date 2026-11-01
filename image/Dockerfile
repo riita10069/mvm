@@ -39,6 +39,13 @@ ARG SHELLCHECK_VERSION=v0.11.0
 ARG DIRENV_VERSION=v2.38.2
 ARG KUBECTL_VERSION=v1.37.1
 ARG HELM_VERSION=v4.3.1
+ARG HERDR_VERSION=v0.9.5
+ARG ZOXIDE_VERSION=0.10.0
+ARG EZA_VERSION=v0.23.5
+ARG YAZI_VERSION=v26.9.1
+ARG GHQ_VERSION=v1.11.2
+ARG SHELDON_VERSION=0.8.5
+ARG DENO_VERSION=v2.9.8
 RUN set -eu; \
     fetch() { curl -fsSL --retry 3 -o "$2" "$1" && echo "$3  $2" | sha256sum -c - >/dev/null; }; \
     t=$(mktemp -d); cd "$t"; \
@@ -72,6 +79,20 @@ RUN set -eu; \
     install -m 0755 kubectl /usr/local/bin/kubectl; \
     fetch https://get.helm.sh/helm-${HELM_VERSION}-linux-arm64.tar.gz helm.tgz 8cf8f66ecbc252ac8f7f06cca68aba88508ddfde3a6a34feb1678ad1694b4f88; \
     tar -xzf helm.tgz --strip-components=1 linux-arm64/helm && install -m 0755 helm /usr/local/bin/helm; \
+    fetch https://github.com/herdrdev/herdr/releases/download/${HERDR_VERSION}/herdr-linux-aarch64 herdr 17d7536f2da50859523680ef279dffcac8e4a235f4e46fe8da6c2ec44141897c; \
+    install -m 0755 herdr /usr/local/bin/herdr; \
+    fetch https://github.com/ajeetdsouza/zoxide/releases/download/v${ZOXIDE_VERSION}/zoxide-${ZOXIDE_VERSION}-aarch64-unknown-linux-musl.tar.gz zoxide.tgz f1f16c5d6298d63dee467eedea1cdcd8490e43e493bea43acd416dc9033ef641; \
+    tar -xzf zoxide.tgz zoxide && install -m 0755 zoxide /usr/local/bin/zoxide; \
+    fetch https://github.com/eza-community/eza/releases/download/${EZA_VERSION}/eza_aarch64-unknown-linux-gnu.tar.gz eza.tgz 40b87ae8628aa2ff0f0d2dc24ab52f689631366385c3da630bae745671fd71ec; \
+    tar -xzf eza.tgz ./eza && install -m 0755 eza /usr/local/bin/eza; \
+    fetch https://github.com/sxyazi/yazi/releases/download/${YAZI_VERSION}/yazi-aarch64-unknown-linux-musl.zip yazi.zip dd569daecaae914185f295634109295ccd25c1b42b02eb89a74f651970024f2e; \
+    unzip -q -j yazi.zip '*/yazi' '*/ya' && install -m 0755 yazi ya /usr/local/bin/; \
+    fetch https://github.com/x-motemen/ghq/releases/download/${GHQ_VERSION}/ghq_linux_arm64.zip ghq.zip 0a083c5d5b214dd0f4f693cf8839b15f6b5cc4e2d91b0cb4abb8748dcdb353c9; \
+    unzip -q -j ghq.zip ghq_linux_arm64/ghq && install -m 0755 ghq /usr/local/bin/ghq; \
+    fetch https://github.com/rossmacarthur/sheldon/releases/download/${SHELDON_VERSION}/sheldon-${SHELDON_VERSION}-aarch64-unknown-linux-musl.tar.gz sheldon.tgz 1f6b792e49e259f7c313e9921c8d4ad638d827abc2c023efe0588a55678f9a3e; \
+    tar -xzf sheldon.tgz sheldon && install -m 0755 sheldon /usr/local/bin/sheldon; \
+    fetch https://github.com/denoland/deno/releases/download/${DENO_VERSION}/deno-aarch64-unknown-linux-gnu.zip deno.zip d49596c20b9788cf8f5d8ddf644103d4bde56ed239753f0bdb92ba9361d51905; \
+    unzip -q deno.zip deno && install -m 0755 deno /usr/local/bin/deno; \
     cd / && rm -rf "$t"
 
 # ---- AWS CLI v2 and Terraform (vendor-signed channels) ----
@@ -110,10 +131,22 @@ RUN set -eu; f=/tmp/mvm-files; \
     chmod 0700 /home/dev/.ssh; \
     install -o dev -g dev -m 0644 $f/zshrc /home/dev/.zshrc; \
     install -o dev -g dev -m 0644 $f/claude-settings.json /home/dev/.claude/settings.json; \
-    install -o dev -g dev -m 0644 $f/CLAUDE.md /home/dev/.claude/CLAUDE.md; \
+    install -o dev -g dev -m 0644 $f/claude-memory.md /home/dev/.claude/CLAUDE.md; \
     install -o dev -g dev -m 0644 $f/codex-config.toml /home/dev/.codex/config.toml; \
     install -d -m 0755 /opt/mvm && install -m 0755 $f/mvm-agent.py /opt/mvm/mvm-agent.py; \
+    if [ -d $f/overlay ]; then mv $f/overlay /tmp/mvm-overlay; fi; \
     rm -rf $f
+
+# ---- Personal overlay (optional, gitignored) ----
+# files/overlay/home/ is copied over /home/dev, then files/overlay/setup.sh runs as dev (sudo works).
+# Use it for your own dotfiles without committing them here. The snapshot rule above applies:
+# nothing per-VM (keys, tokens, running servers) may be left behind.
+RUN set -eu; o=/tmp/mvm-overlay; \
+    if [ -d $o ]; then \
+      if [ -d $o/home ]; then cp -a $o/home/. /home/dev/ && chown -R dev:dev /home/dev; fi; \
+      if [ -f $o/setup.sh ]; then cd /home/dev && sudo -u dev -H env MVM_OVERLAY=$o bash $o/setup.sh; fi; \
+      rm -rf $o; \
+    fi
 
 # mvm-agent: lifecycle hooks (:9000) and the WebSocket-to-sshd bridge (:2222).
 EXPOSE 2222 9000
